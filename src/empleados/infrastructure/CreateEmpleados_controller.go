@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/vicpoo/APIGOproyect/src/empleados/application"
-	"github.com/vicpoo/APIGOproyect/src/empleados/domain"
+	"github.com/vicpoo/APIGOproyect/src/empleados/domain/entities"
 )
 
 type CreateEmpleadoController struct {
@@ -17,7 +17,7 @@ func NewCreateEmpleadoController(useCase *application.CreateEmpleado) *CreateEmp
 }
 
 func (cec *CreateEmpleadoController) Execute(c *gin.Context) {
-	var empleado domain.Empleado
+	var empleado entities.Empleado
 	if err := c.ShouldBindJSON(&empleado); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

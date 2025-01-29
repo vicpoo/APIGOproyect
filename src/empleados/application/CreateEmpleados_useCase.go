@@ -1,8 +1,8 @@
 package application
 
 import (
-	"github.com/vicpoo/APIGOproyect/empleados/domain"
-	"github.com/vicpoo/APIGOproyect/empleados/domain/entities"
+	"github.com/vicpoo/APIGOproyect/src/empleados/domain"
+	"github.com/vicpoo/APIGOproyect/src/empleados/domain/entities"
 )
 
 type CreateEmpleado struct {
