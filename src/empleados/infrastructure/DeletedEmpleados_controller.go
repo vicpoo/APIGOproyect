@@ -5,29 +5,40 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/vicpoo/APIGOproyect/src/empleados/application"
+	application "github.com/vicpoo/APIGOproyect/src/empleados/application"
 )
 
 type DeleteEmpleadoController struct {
-	useCase *application.DeleteEmpleado
+	deleteUseCase *application.DeleteEmpleadoUseCase
 }
 
-func NewDeleteEmpleadoController(useCase *application.DeleteEmpleado) *DeleteEmpleadoController {
-	return &DeleteEmpleadoController{useCase: useCase}
+func NewDeleteEmpleadoController(deleteUseCase *application.DeleteEmpleadoUseCase) *DeleteEmpleadoController {
+	return &DeleteEmpleadoController{
+		deleteUseCase: deleteUseCase,
+	}
 }
 
-func (dec *DeleteEmpleadoController) Execute(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
+func (ctrl *DeleteEmpleadoController) Run(c *gin.Context) {
+	idParam := c.Param("id")
+	id, err := strconv.Atoi(idParam)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "ID inválido"})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "ID inválido",
+			"error":   err.Error(),
+		})
 		return
 	}
 
-	err = dec.useCase.Execute(id)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "No se pudo eliminar el empleado"})
+	errDelete := ctrl.deleteUseCase.Run(id)
+	if errDelete != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "No se pudo eliminar el empleado",
+			"error":   errDelete.Error(),
+		})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Empleado eliminado exitosamente"})
+	c.JSON(http.StatusOK, gin.H{
+		"status": "Empleado eliminado exitosamente",
+	})
 }

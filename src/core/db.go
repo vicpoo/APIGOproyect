@@ -10,31 +10,34 @@ import (
 	"github.com/joho/godotenv"
 )
 
-var DB *sql.DB
+var db *sql.DB
 
+// InitDB inicializa la conexión a la base de datos.
 func InitDB() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error cargando el archivo .env")
+	if err := godotenv.Load(); err != nil {
+		log.Println("Advertencia: No se pudo cargar .env")
 	}
 
-	dbUser := os.Getenv("DB_USER")
-	dbPassword := os.Getenv("DB_PASSWORD")
-	dbHost := os.Getenv("DB_HOST")
-	dbPort := os.Getenv("DB_PORT")
-	dbName := os.Getenv("DB_NAME")
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
+		os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"),
+		os.Getenv("DB_HOST"), os.Getenv("DB_PORT"),
+		os.Getenv("DB_NAME"),
+	)
 
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", dbUser, dbPassword, dbHost, dbPort, dbName)
-
-	DB, err = sql.Open("mysql", dsn)
+	var err error
+	db, err = sql.Open("mysql", dsn)
 	if err != nil {
-		log.Fatal("Error al conectar a la base de datos:", err)
+		log.Fatal("Error al conectar a la BD:", err)
 	}
 
-	err = DB.Ping()
-	if err != nil {
-		log.Fatal("No se pudo conectar a la base de datos:", err)
+	if err = db.Ping(); err != nil {
+		log.Fatal("No se pudo conectar a la BD:", err)
 	}
 
-	fmt.Println("Conexión a la base de datos exitosa")
+	fmt.Println("Conexión a la BD exitosa")
+}
+
+// GetDB retorna la conexión a la base de datos.
+func GetDB() *sql.DB {
+	return db
 }

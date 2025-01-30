@@ -9,25 +9,38 @@ import (
 )
 
 type CreateEmpleadoController struct {
-	useCase *application.CreateEmpleado
+	CreateEmpleadoUseCase *application.CreateEmpleadoUseCase
 }
 
-func NewCreateEmpleadoController(useCase *application.CreateEmpleado) *CreateEmpleadoController {
-	return &CreateEmpleadoController{useCase: useCase}
+func NewCreateEmpleadoController(createEmpleadoUseCase *application.CreateEmpleadoUseCase) *CreateEmpleadoController {
+	return &CreateEmpleadoController{
+		CreateEmpleadoUseCase: createEmpleadoUseCase,
+	}
 }
 
-func (cec *CreateEmpleadoController) Execute(c *gin.Context) {
+func (ctrl *CreateEmpleadoController) Run(c *gin.Context) {
 	var empleado entities.Empleado
-	if err := c.ShouldBindJSON(&empleado); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
+	if errJSON := c.ShouldBindJSON(&empleado); errJSON != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Datos del empleado inválidos",
+			"error":   errJSON.Error(),
+		})
 		return
 	}
 
-	err := cec.useCase.Execute(empleado)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "No se pudo crear el empleado"})
+	empleadoCreado, errAdd := ctrl.CreateEmpleadoUseCase.Run(&empleado)
+
+	if errAdd != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Error al agregar el empleado",
+			"error":   errAdd.Error(),
+		})
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": "Empleado creado exitosamente"})
+	c.JSON(http.StatusOK, gin.H{
+		"message":  "El empleado ha sido agregado",
+		"empleado": empleadoCreado,
+	})
 }

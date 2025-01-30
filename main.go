@@ -1,41 +1,35 @@
-package core
+package main
 
 import (
-	"database/sql"
 	"fmt"
-	"log"
-	"os"
 
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/joho/godotenv"
+	"github.com/gin-gonic/gin"
+	"github.com/vicpoo/APIGOproyect/core"
+	"github.com/vicpoo/APIGOproyect/src/empleados/application"
+	"github.com/vicpoo/APIGOproyect/src/empleados/domain" // Asegúrate de que este import esté presente
+	"github.com/vicpoo/APIGOproyect/src/empleados/infrastructure"
 )
 
-var db *sql.DB
+func main() {
+	// Iniciar la conexión a la base de datos
+	core.InitDB()
 
-func InitDB() {
-	if err := godotenv.Load(); err != nil {
-		log.Println("Advertencia: No se pudo cargar .env")
-	}
+	// Crear el repositorio de empleados
+	empleadoRepo := domain.NewEmpleadoRepository(core.GetDB()) // Usar correctamente el paquete domain
 
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
-		os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"),
-		os.Getenv("DB_HOST"), os.Getenv("DB_PORT"),
-		os.Getenv("DB_NAME"),
-	)
+	// Crear el caso de uso para crear empleados
+	createEmpleado := application.NewCreateEmpleado(empleadoRepo)
 
-	var err error
-	db, err = sql.Open("mysql", dsn)
+	// Crear el controlador
+	createEmpleadoController := infrastructure.NewCreateEmpleadoController(createEmpleado)
+
+	// Configurar el servidor HTTP
+	r := gin.Default()
+	r.POST("/empleados", createEmpleadoController.Execute)
+
+	// Iniciar el servidor
+	err := r.Run(":8080")
 	if err != nil {
-		log.Fatal("Error al conectar a la BD:", err)
+		fmt.Println("Error al iniciar el servidor:", err)
 	}
-
-	if err = db.Ping(); err != nil {
-		log.Fatal("No se pudo conectar a la BD:", err)
-	}
-
-	fmt.Println("Conexión a la BD exitosa")
-}
-
-func GetDB() *sql.DB {
-	return db
 }

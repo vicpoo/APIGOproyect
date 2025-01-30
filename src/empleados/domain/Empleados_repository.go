@@ -1,6 +1,6 @@
 package domain
 
-import "github.com/vicpoo/APIGOproyect/empleados/domain/entities"
+import "github.com/vicpoo/APIGOproyect/src/empleados/domain/entities"
 
 type IEmpleado interface {
 	Save(empleado entities.Empleado) error

@@ -2,15 +2,28 @@ package infrastructure
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/vicpoo/APIGOproyect/src/empleados/application"
 )
 
-func RegisterEmpleadoRoutes(router *gin.Engine, createUC *application.CreateEmpleado, updateUC *application.UpdateEmpleado, deleteUC *application.DeleteEmpleado, viewUC *application.ViewEmpleado) {
-	empleadoGroup := router.Group("/empleados")
+type Router struct {
+	engine *gin.Engine
+}
+
+func NewRouter(engine *gin.Engine) *Router {
+	return &Router{
+		engine: engine,
+	}
+}
+
+func (router *Router) Run() {
+	// Inicializar dependencias
+	createController, viewController, updateController, deleteController := InitEmpleadoDependencies()
+
+	// Grupo de rutas para empleados
+	empleadoGroup := router.engine.Group("/empleados")
 	{
-		empleadoGroup.POST("/", NewCreateEmpleadoController(createUC).Execute)
-		empleadoGroup.PUT("/:id", NewUpdateEmpleadoController(updateUC).Execute)
-		empleadoGroup.DELETE("/:id", NewDeleteEmpleadoController(deleteUC).Execute)
-		empleadoGroup.GET("/:id", NewViewEmpleadoController(viewUC).Execute)
+		empleadoGroup.POST("/", createController.Run)       // Crear empleado
+		empleadoGroup.GET("/:id", viewController.Execute)   // Ver empleado por ID
+		empleadoGroup.PUT("/:id", updateController.Execute) // Actualizar empleado
+		empleadoGroup.DELETE("/:id", deleteController.Run)  // Eliminar empleado
 	}
 }

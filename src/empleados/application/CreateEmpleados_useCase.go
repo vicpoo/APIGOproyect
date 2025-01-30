@@ -5,14 +5,17 @@ import (
 	"github.com/vicpoo/APIGOproyect/src/empleados/domain/entities"
 )
 
-type CreateEmpleado struct {
+type CreateEmpleadoUseCase struct {
 	db domain.IEmpleado
 }
 
-func NewCreateEmpleado(db domain.IEmpleado) *CreateEmpleado {
-	return &CreateEmpleado{db: db}
+func NewCreateEmpleadoUseCase(db domain.IEmpleado) *CreateEmpleadoUseCase {
+	return &CreateEmpleadoUseCase{
+		db: db,
+	}
 }
 
-func (ce *CreateEmpleado) Execute(empleado entities.Empleado) error {
-	return ce.db.Save(empleado)
+func (uc *CreateEmpleadoUseCase) Run(empleado *entities.Empleado) (*entities.Empleado, error) {
+	err := uc.db.Save(*empleado)
+	return empleado, err
 }

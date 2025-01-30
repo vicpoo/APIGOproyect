@@ -2,14 +2,16 @@ package application
 
 import "github.com/vicpoo/APIGOproyect/src/empleados/domain"
 
-type DeleteEmpleado struct {
+type DeleteEmpleadoUseCase struct {
 	db domain.IEmpleado
 }
 
-func NewDeleteEmpleado(db domain.IEmpleado) *DeleteEmpleado {
-	return &DeleteEmpleado{db: db}
+func NewDeleteEmpleadoUseCase(db domain.IEmpleado) *DeleteEmpleadoUseCase {
+	return &DeleteEmpleadoUseCase{
+		db: db,
+	}
 }
 
-func (de *DeleteEmpleado) Execute(id int) error {
-	return de.db.Delete(id)
+func (uc *DeleteEmpleadoUseCase) Run(id int) error {
+	return uc.db.Delete(id)
 }
