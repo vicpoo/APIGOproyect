@@ -7,4 +7,5 @@ type IEmpleado interface {
 	Update(id int, empleado entities.Empleado) error
 	Delete(id int) error
 	FindByID(id int) (entities.Empleado, error)
+	GetAll() ([]entities.Empleado, error)
 }
