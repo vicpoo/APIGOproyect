@@ -21,10 +21,10 @@ func (router *Router) Run() {
 	// Grupo de rutas para equipos
 	equipoGroup := router.engine.Group("/equipos")
 	{
-		equipoGroup.POST("/", createController.Run)       // Crear equipo
-		equipoGroup.GET("/:id", viewController.Execute)   // Ver equipo por ID
-		equipoGroup.PUT("/:id", updateController.Execute) // Actualizar equipo
-		equipoGroup.DELETE("/:id", deleteController.Run)  // Eliminar equipo
-		equipoGroup.GET("/", viewAllController.Execute)   // Ver todos los equipos
+		equipoGroup.POST("/", createController.Run)
+		equipoGroup.GET("/:id", viewController.Execute)
+		equipoGroup.PUT("/:id", updateController.Execute)
+		equipoGroup.DELETE("/:id", deleteController.Run)
+		equipoGroup.GET("/", viewAllController.Execute)
 	}
 }

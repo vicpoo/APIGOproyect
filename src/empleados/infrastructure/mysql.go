@@ -19,7 +19,6 @@ func NewMysqlEmpleadoRepository() domain.IEmpleado {
 	return &MysqlEmpleado{conn: conn}
 }
 
-// Save implementa el método de la interfaz IEmpleado.
 func (mysql *MysqlEmpleado) Save(empleado entities.Empleado) error {
 	result, err := mysql.conn.Exec(
 		"INSERT INTO empleados (nombre, apellido, area, correo_electronico, deleted) VALUES (?, ?, ?, ?, ?)",
@@ -44,7 +43,6 @@ func (mysql *MysqlEmpleado) Save(empleado entities.Empleado) error {
 	return nil
 }
 
-// Update implementa el método de la interfaz IEmpleado.
 func (mysql *MysqlEmpleado) Update(id int, empleado entities.Empleado) error {
 	result, err := mysql.conn.Exec(
 		"UPDATE empleados SET nombre = ?, apellido = ?, area = ?, correo_electronico = ?, deleted = ? WHERE id = ?",
@@ -74,7 +72,6 @@ func (mysql *MysqlEmpleado) Update(id int, empleado entities.Empleado) error {
 	return nil
 }
 
-// Delete implementa el método de la interfaz IEmpleado.
 func (mysql *MysqlEmpleado) Delete(id int) error {
 	_, err := mysql.conn.Exec("UPDATE empleados SET deleted = true WHERE id = ?", id)
 	if err != nil {
@@ -84,7 +81,6 @@ func (mysql *MysqlEmpleado) Delete(id int) error {
 	return nil
 }
 
-// FindByID implementa el método de la interfaz IEmpleado.
 func (mysql *MysqlEmpleado) FindByID(id int) (entities.Empleado, error) {
 	var empleado entities.Empleado
 	row := mysql.conn.QueryRow("SELECT id, nombre, apellido, area, correo_electronico, deleted FROM empleados WHERE id = ?", id)
@@ -109,7 +105,6 @@ func (mysql *MysqlEmpleado) FindByID(id int) (entities.Empleado, error) {
 	return empleado, nil
 }
 
-// GetAll es un método adicional para obtener todos los empleados.
 func (mysql *MysqlEmpleado) GetAll() ([]entities.Empleado, error) {
 	var empleados []entities.Empleado
 

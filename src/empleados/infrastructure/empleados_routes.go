@@ -21,10 +21,10 @@ func (router *Router) Run() {
 	// Grupo de rutas para empleados
 	empleadoGroup := router.engine.Group("/empleados")
 	{
-		empleadoGroup.POST("/", createController.Run)       // Crear empleado
-		empleadoGroup.GET("/:id", viewController.Execute)   // Ver empleado por ID
-		empleadoGroup.PUT("/:id", updateController.Execute) // Actualizar empleado
-		empleadoGroup.DELETE("/:id", deleteController.Run)  // Eliminar empleado
-		empleadoGroup.GET("/", viewAllController.Execute)   // Ver todos los empleados
+		empleadoGroup.POST("/", createController.Run)
+		empleadoGroup.GET("/:id", viewController.Execute)
+		empleadoGroup.PUT("/:id", updateController.Execute)
+		empleadoGroup.DELETE("/:id", deleteController.Run)
+		empleadoGroup.GET("/", viewAllController.Execute)
 	}
 }
