@@ -139,3 +139,38 @@ func (mysql *MysqlEmpleado) GetAll() ([]entities.Empleado, error) {
 
 	return empleados, nil
 }
+
+func (mysql *MysqlEmpleado) GetByStatus(deleted bool) ([]entities.Empleado, error) {
+	var empleados []entities.Empleado
+
+	rows, err := mysql.conn.Query("SELECT id, nombre, apellido, area, correo_electronico, deleted FROM empleados WHERE deleted = ?", deleted)
+	if err != nil {
+		log.Println("Error al obtener empleados por estado:", err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var empleado entities.Empleado
+		err := rows.Scan(
+			&empleado.ID,
+			&empleado.Nombre,
+			&empleado.Apellido,
+			&empleado.Area,
+			&empleado.CorreoElectronico,
+			&empleado.Deleted,
+		)
+		if err != nil {
+			log.Println("Error al filtrar a los empleado:", err)
+			return nil, err
+		}
+		empleados = append(empleados, empleado)
+	}
+
+	if err := rows.Err(); err != nil {
+		log.Println("Error al filtar los empleados:", err)
+		return nil, err
+	}
+
+	return empleados, nil
+}

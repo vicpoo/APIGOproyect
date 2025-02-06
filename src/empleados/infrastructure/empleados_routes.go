@@ -16,7 +16,7 @@ func NewRouter(engine *gin.Engine) *Router {
 
 func (router *Router) Run() {
 	// Inicializar dependencias
-	createController, viewController, updateController, deleteController, viewAllController := InitEmpleadoDependencies()
+	createController, viewController, updateController, deleteController, viewAllController, GetEmpleadosByStatusController := InitEmpleadoDependencies()
 
 	// Grupo de rutas para empleados
 	empleadoGroup := router.engine.Group("/empleados")
@@ -26,5 +26,6 @@ func (router *Router) Run() {
 		empleadoGroup.PUT("/:id", updateController.Execute)
 		empleadoGroup.DELETE("/:id", deleteController.Run)
 		empleadoGroup.GET("/", viewAllController.Execute)
+		empleadoGroup.GET("/status/:status", GetEmpleadosByStatusController.Run)
 	}
 }

@@ -9,7 +9,8 @@ func InitEmpleadoDependencies() (
 	*ViewEmpleadoController,
 	*UpdateEmpleadoController,
 	*DeleteEmpleadoController,
-	*ViewAllEmpleadosController, // Nuevo controlador
+	*ViewAllEmpleadosController,
+	*GetEmpleadosByStatusController,
 ) {
 	// Inicializar el repositorio
 	repo := NewMysqlEmpleadoRepository()
@@ -19,14 +20,16 @@ func InitEmpleadoDependencies() (
 	viewUseCase := application.NewViewEmpleado(repo)
 	updateUseCase := application.NewUpdateEmpleado(repo)
 	deleteUseCase := application.NewDeleteEmpleadoUseCase(repo)
-	viewAllUseCase := application.NewViewAllEmpleados(repo) // Nuevo caso de uso
+	viewAllUseCase := application.NewViewAllEmpleados(repo)
+	getEmpleadosBystatus := application.NewGetEmpleadosByStatusUseCase(repo)
 
 	// Crear controladores
 	createController := NewCreateEmpleadoController(createUseCase)
 	viewController := NewViewEmpleadoController(viewUseCase)
 	updateController := NewUpdateEmpleadoController(updateUseCase)
 	deleteController := NewDeleteEmpleadoController(deleteUseCase)
-	viewAllController := NewViewAllEmpleadosController(viewAllUseCase) // Nuevo controlador
+	viewAllController := NewViewAllEmpleadosController(viewAllUseCase)
+	getEmpleadosBystatuscontroller := NewGetEmpleadosByStatusController(getEmpleadosBystatus)
 
-	return createController, viewController, updateController, deleteController, viewAllController
+	return createController, viewController, updateController, deleteController, viewAllController, getEmpleadosBystatuscontroller
 }

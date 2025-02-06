@@ -8,4 +8,5 @@ type IEmpleado interface {
 	Delete(id int) error
 	FindByID(id int) (entities.Empleado, error)
 	GetAll() ([]entities.Empleado, error)
+	GetByStatus(deleted bool) ([]entities.Empleado, error)
 }
